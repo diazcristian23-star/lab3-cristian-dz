@@ -2,27 +2,32 @@ pipeline {
     agent {
         kubernetes {
             yamlFile 'agent.yaml'
-            defaultContainer 'node'
         }
     }
 
     stages {
         stage('install') {
             steps {
-                sh 'corepack enable'
-                sh 'pnpm install'
+                container('node') {
+                    sh 'corepack enable'
+                    sh 'pnpm install'
+                }
             }
         }
 
         stage('test') {
             steps {
-                sh 'pnpm test'
+                container('node') {
+                    sh 'pnpm test'
+                }
             }
         }
 
         stage('build') {
             steps {
-                sh 'pnpm build'
+                container('node') {
+                    sh 'pnpm build'
+                }
             }
         }
 

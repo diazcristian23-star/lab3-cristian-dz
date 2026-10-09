@@ -43,7 +43,7 @@ spec:
     spec:
       containers:
         - name: app-cristian-dz
-          image: cristiandz/lab3-cristian:latest
+          image: cristiandz/lab3-cristian:cristian-dz
           ports:
             - containerPort: 3000
           env:

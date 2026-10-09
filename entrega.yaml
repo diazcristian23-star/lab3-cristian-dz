@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ns-cristian-dz
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-cristian-dz
+  namespace: ns-cristian-dz
+data:
+  AMBIENTE: desarrollo
+
+---
+
+apiVersion: v1
+kind: Secret
+metadata:
+  name: secret-cristian-dz
+  namespace: ns-cristian-dz
+type: Opaque
+stringData:
+  API_KEY: clave-lab3
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-cristian-dz
+  namespace: ns-cristian-dz
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: app-cristian-dz
+  template:
+    metadata:
+      labels:
+        app: app-cristian-dz
+    spec:
+      containers:
+        - name: app-cristian-dz
+          image: cristiandz/lab3-cristian:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: AMBIENTE
+              valueFrom:
+                configMapKeyRef:
+                  name: config-cristian-dz
+                  key: AMBIENTE
+            - name: API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: secret-cristian-dz
+                  key: API_KEY
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-cristian-dz
+  namespace: ns-cristian-dz
+spec:
+  selector:
+    app: app-cristian-dz
+  ports:
+    - port: 80
+      targetPort: 3000
